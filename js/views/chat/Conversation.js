@@ -425,6 +425,7 @@ export default class extends baseVw {
     if (this._isOpen) return;
     this._isOpen = true;
     getBody().addClass('chatConvoOpen');
+    this.$messageInput.focus();
   }
 
   close() {

@@ -1,17 +1,18 @@
 #chatCloseBtn {
   position: absolute;
-  top: $bar + $barLg - 40;
+  top: 65px;
   right: -220px;
   width: 40px;
   height: 40px;
   z-index: 3;
   border-radius: 0;
   font-size: $tx1;
+  border-right-width: 0;
   border-bottom-width: 0;
   @include chatOpeningTransition(right);
 
   .chatOpen & {
-    right: $scrollbar;
+    right: 1px;
   }
 }
 
@@ -22,8 +23,7 @@
     .chatHead {
       cursor: pointer;
       position: relative;
-      padding: 0 $padSm;
-      box-sizing: border-box;
+      padding-left: 5px;
 
       .unreadBadge {
         position: absolute;
@@ -46,7 +46,6 @@
       .headContent {
         padding: $padSm;
         max-height: 31px;
-        flex-grow: 1;
       }
 
       .handleGuid {
@@ -83,7 +82,7 @@
         }
 
         .fullText {
-          display: inline;
+          display: inline;          
         }
       }
 
@@ -103,15 +102,14 @@
       .bottomUnreadBanner {
         display: block;
         bottom: 45px;
-      }
+      }      
     }
   }
 }
 
 .chatConversation {
   border-width: 1px;
-  border-style: solid;
-  border-color: inherit;
+  border-style: solid;  
   height: 100%;
 
   .convoHeader {
@@ -130,7 +128,7 @@
 
     .convoProfileHeader {
       .handle {
-        max-width: 105px;
+        max-width: 128px;
         display: block;
         font-weight: bold;
       }
@@ -141,7 +139,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    right: 1px; // don't cover the right border of the parent
+    right: 0;
     bottom: 0;
     padding-left: $padSm;
     padding-right: $padSm;
@@ -197,7 +195,7 @@
           position: absolute;
           margin-top: 3px;
         }
-      }
+      }      
     }
   }
 
@@ -229,7 +227,7 @@
   &.isTyping {
     .typingIndicator {
       transform: translate(-50%, 0);
-    }
+    }    
   }
 
   .deletingOverlay {
