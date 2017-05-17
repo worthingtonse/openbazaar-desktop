@@ -18,16 +18,47 @@ import EmojiMenu from './EmojiMenu';
 
 export default class extends baseVw {
   constructor(options = {}) {
-    if (!options.profile ||
-      (!(options.profile instanceof Profile) &&
-      !options.profile.then)) {
-      throw new Error('Please provide a profile model or a promise that provides' +
-        ' one when it resolves.');
-    }
+    // if (!options.profile ||
+    //   (!(options.profile instanceof Profile) &&
+    //   !options.profile.then)) {
+    //   throw new Error('Please provide a profile model or a promise that provides' +
+    //     ' one when it resolves.');
+    // }
 
-    if (!options.guid) {
-      throw new Error('Please provide the GUID of the person you are conversing with.');
-    }
+    // if (!options.conversants) {
+    //   throw new Error('Please provide a conversants object.');
+    // }
+
+    // if (!Object.keys(options.conversants).length) {
+    //   throw new Error('At least one conversant is required.');
+    // } else if (Object.keys(options.conversants).length === 1 &&
+    //   options.conversants[app.profile.id]) {
+    //   throw new Error('The current nodes should not be the only conversant.');
+    // }
+
+    // // todo: document the expected structure of the conversants opt.
+    // Object.keys(options.conversants)
+    //   .forEach((conversantKey, index) => {
+    //     const conversant = options.conversants[conversantKey];
+    //     if (conversantKey !== app.profile.id &&
+    //       !conversant.profile ||
+    //       (!(conversant instanceof Profile) &&
+    //         !conversant.profile.then)) {
+    //       throw new Error(`The conversant at index ${index} needs a valid profile set.`);
+    //     }
+
+    //     // If any profiles are provided directly as models, we'll make them into promises
+    //     // so the rest of the code can expect promises.
+    //     if (!conversant.profile.then) {
+    //       const deferred = $.deferred();
+    //       deferred.resolve(conversant.profile);
+    //       conversant.profile = deferred.promise();
+    //     }
+    //   });
+
+    // if (!options.guid) {
+    //   throw new Error('Please provide the GUID of the person you are conversing with.');
+    // }
 
     if (options.subject && options.subject.length > ChatMessage.max.subjectLength) {
       throw new Error(`The subject cannot exceed ${ChatMessage.max.subjectLength} characters`);
@@ -41,7 +72,7 @@ export default class extends baseVw {
     super(opts);
 
     this.options = opts;
-    this._guid = this.options.guid;
+    // this._guid = this.options.guid;
     this._isOpen = false;
     this._isEmojiMenuOpen = false;
     this.subject = '';
@@ -50,30 +81,43 @@ export default class extends baseVw {
     this.fetchedAllMessages = false;
     this.ignoreScroll = false;
 
-    if (options.profile instanceof Profile) {
-      this.profile = this.options.profile;
-    } else {
-      options.profile.done(model => {
-        this.profile = model;
-
+    // Set the first conversant other than ourselves as the profile header.
+    this.firstConversant.profile
+      .done(profile => {
         if (this.convoProfileHeader) {
+          this.convoProfileHeaderProfile = profile;
           this.convoProfileHeader.setState({
-            handle: model.get('handle'),
-            avatarHashes: model.get('avatarHashes').toJSON(),
-            location: model.get('location'),
+            handle: profile.get('handle'),
+            avatarHashes: profile.get('avatarHashes').toJSON(),
+            location: profile.get('location'),
           });
         }
-
-        if (this.convoMessages) {
-          this.convoMessages.setProfile(model);
-          const handle = model.get('handle');
-
-          if (handle) {
-            this.setTypingIndicator(handle);
-          }
-        }
       });
-    }
+
+    // if (options.profile instanceof Profile) {
+    //   this.profile = this.options.profile;
+    // } else {
+    //   options.profile.done(model => {
+    //     this.profile = model;
+
+    //     if (this.convoProfileHeader) {
+    //       this.convoProfileHeader.setState({
+    //         handle: model.get('handle'),
+    //         avatarHashes: model.get('avatarHashes').toJSON(),
+    //         location: model.get('location'),
+    //       });
+    //     }
+
+    //     if (this.convoMessages) {
+    //       this.convoMessages.setProfile(model);
+    //       const handle = model.get('handle');
+
+    //       if (handle) {
+    //         this.setTypingIndicator(handle);
+    //       }
+    //     }
+    //   });
+    // }
 
     this.messages = new ChatMessages([], { guid: this.guid });
     this.listenTo(this.messages, 'request', this.onMessagesRequest);
@@ -458,8 +502,30 @@ export default class extends baseVw {
     this.trigger('convoMarkedAsRead');
   }
 
-  get guid() {
-    return this._guid;
+  // get guid() {
+  //   return this._guid;
+  // }
+
+  // returns the first conversant that is not you
+  get firstConversant() {
+    let id;
+
+    const conversant = Object.keys(this.options.conversants)
+      .filter(conversantKey => {
+        let isntMe = false;
+
+        if (conversantKey !== app.profile.id) {
+          isntMe = true;
+          id = conversantKey;
+        }
+
+        return isntMe;
+      })[0];
+
+    return {
+      id,
+      ...conversant,
+    };
   }
 
   open() {
@@ -585,7 +651,6 @@ export default class extends baseVw {
     loadTemplate('chat/conversation.html', (t) => {
       this.$el.html(t({
         guid: this.guid,
-        profile: this.profile && this.profile.toJSON() || {},
         showLoadMessagesError: this.showLoadMessagesError,
         typingIndicator: this.getTypingIndicatorContent(),
         maxMessageLength: ChatMessage.max.messageLength,
@@ -602,13 +667,15 @@ export default class extends baseVw {
       if (this.convoProfileHeader) this.convoProfileHeader.remove();
 
       const convoProfileHeaderInitialState = {
-        guid: this.guid,
+        guid: this.firstConversant.id,
       };
 
-      if (this.profile) {
-        convoProfileHeaderInitialState.handle = this.profile.get('handle');
-        convoProfileHeaderInitialState.avatarHashes = this.profile.get('avatarHashes').toJSON();
-        convoProfileHeaderInitialState.location = this.profile.get('location');
+      if (this.convoProfileHeaderProfile) {
+        convoProfileHeaderInitialState.handle = this.convoProfileHeaderProfile.get('handle');
+        convoProfileHeaderInitialState.avatarHashes =
+          this.convoProfileHeaderProfile.get('avatarHashes').toJSON();
+        convoProfileHeaderInitialState.location =
+          this.convoProfileHeaderProfile.get('location');
       }
 
       this.convoProfileHeader = this.createChild(ConvoProfileHeader, {
@@ -626,7 +693,7 @@ export default class extends baseVw {
 
       if (this.ConvoMessages) this.ConvoMessages.remove();
 
-      this.convoMessages = new ConvoMessages({
+      this.convoMessages = this.createChild(ConvoMessages, {
         collection: this.messages,
         $scrollContainer: this.$convoMessagesWindow,
         profile: this.profile,

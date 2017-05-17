@@ -90,16 +90,23 @@ export default class extends BaseModal {
 
   onFirstOrderSync() {
     this.stopListening(this.model, null, this.onOrderRequest);
-    // dummy guid for now
-    this.featuredProfileFetch =
-      this.options.getProfiles(['Qmai9U7856XKgDSvMFExPbQufcsc4ksG779VyG4Md5dn4J'])[0]
-        .done(profile => {
-          this.featuredProfileMd = new Profile(profile);
-          this.featuredProfile.setModel(this.featuredProfileMd);
-          this.featuredProfile.setState({
-            isFetching: false,
-          });
-        });
+
+    if (this.type === 'case') {
+      this.featuredProfileFetch =
+        this.model.get('buyerOpened') ? this.buyerProfile : this.vendorProfile;
+    } else if (this.type === 'sale') {
+      this.featuredProfileFetch = this.buyerProfile;
+    } else {
+      this.featuredProfileFetch = this.vendorProfile;
+    }
+
+    this.featuredProfileFetch.done(profile => {
+      this.featuredProfileMd = profile;
+      this.featuredProfile.setModel(this.featuredProfileMd);
+      this.featuredProfile.setState({
+        isFetching: false,
+      });
+    });
   }
 
   onClickRetryFetch() {
@@ -117,6 +124,77 @@ export default class extends BaseModal {
 
   get type() {
     return this.model instanceof Case ? 'case' : this.model.type;
+  }
+
+  get participantIds() {
+    if (!this._participantIds) {
+      // For now using flat model data. Once we start on the summary
+      // tab, the Order Detail model will likely be built up with
+      // nested models and collections.
+      const modelData = this.model.toJSON();
+      let contract = modelData.contract;
+
+      if (this.type === 'case') {
+        contract = modelData.buyerContract;
+
+        if (!modelData.buyerOpened) {
+          contract = modelData.vendorContract;
+        }
+      }
+
+      this._participantIds = {
+        buyer: contract.buyerOrder.buyerID.peerID,
+        vendor: contract.vendorListings[0].vendorID.peerID,
+        moderator: contract.buyerOrder.payment.moderator,
+      };
+    }
+
+    return this._participantIds;
+  }
+
+  get buyerId() {
+    return this.participantIds.buyer;
+  }
+
+  get vendorId() {
+    return this.participantIds.vendor;
+  }
+
+  get moderatorId() {
+    return this.participantIds.moderator;
+  }
+
+  /**
+   * Returns a promise that resolves with the buyer's Profile model.
+   */
+  get buyerProfile() {
+    if (!this._buyerProfile) {
+      this._buyerProfile = this.options.getProfiles([this.buyerId])[0];
+    }
+
+    return this._buyerProfile;
+  }
+
+  /**
+   * Returns a promise that resolves with the vendor's Profile model.
+   */
+  get vendorProfile() {
+    if (!this._vendorProfile) {
+      this._vendorProfile = this.options.getProfiles([this.vendorId])[0];
+    }
+
+    return this._vendorProfile;
+  }
+
+  /**
+   * Returns a promise that resolves with the moderator's Profile model.
+   */
+  get moderatorProfile() {
+    if (!this._moderatorProfile) {
+      this._moderatorProfile = this.options.getProfiles([this.moderatorId])[0];
+    }
+
+    return this._buyerProfile;
   }
 
   getState() {
@@ -178,8 +256,36 @@ export default class extends BaseModal {
   }
 
   createDiscussionTabView() {
+    const conversants = [
+      {
+        id: this.buyerId,
+        data: {
+          role: 'buyer',
+        },
+        profile: this.buyerProfile,
+      },
+      {
+        id: this.vendorId,
+        data: {
+          role: 'vendor',
+        },
+        profile: this.vendorProfile,
+      },
+    ];
+
+    if (this.moderatorId) {
+      conversants.push({
+        id: this.moderatorId,
+        data: {
+          role: 'moderator',
+        },
+        profile: this.moderatorProfile,
+      });
+    }
+
     const view = this.createChild(Discussion, {
       model: this.model,
+      conversants,
     });
 
     return view;

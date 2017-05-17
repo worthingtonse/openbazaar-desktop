@@ -1,5 +1,6 @@
-import BaseVw from '../../baseVw';
 import loadTemplate from '../../../utils/loadTemplate';
+import BaseVw from '../../baseVw';
+import Conversation from '../../chat/Conversation';
 
 export default class extends BaseVw {
   constructor(options = {}) {
@@ -33,6 +34,11 @@ export default class extends BaseVw {
       }));
 
       // this._$filterCheckboxes = null;
+
+      // if (this.conversation) this.conversation.remove();
+      // this.conversation = this.createChild(Conversation, {
+        
+      // });
     });
 
     return this;

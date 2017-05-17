@@ -1,3 +1,5 @@
+import $ from 'jquery';
+import { getSocket } from '../../utils/serverConnect';
 import BaseModel from '../BaseModel';
 import app from '../../app';
 import Image from './Image';
@@ -159,4 +161,62 @@ export default class extends BaseModel {
 
     return super.sync(method, model, options);
   }
+}
+
+const profileDeferreds = {};
+
+export function getProfiles(peerIds = [], options = {}) {
+  if (!Array.isArray(peerIds)) {
+    throw new Error('Please provide an array of peer ids.');
+  }
+
+  if (!getSocket()) {
+    throw new Error('Unable to obtain profiles without a server connection.');
+  }
+
+  const opts = {
+    async: true,
+    usecache: true,
+    ...options,
+  };
+  const promises = [];
+  const profilesToFetch = [];
+
+  peerIds.forEach(id => {
+    if (!profileDeferreds[id]) {
+      const deferred = $.Deferred();
+      profileDeferreds[id] = deferred;
+      profilesToFetch.push(id);
+    }
+
+    promises.push(profileDeferreds[id].promise());
+  });
+
+  if (profilesToFetch.length) {
+    const queryString = $.param({
+      async: opts.async,
+      usecache: opts.usecache,
+    });
+    $.post({
+      url: app.getServerUrl(`ob/fetchprofiles?${queryString}`),
+      data: JSON.stringify(profilesToFetch),
+      dataType: 'json',
+      contentType: 'application/json',
+    }).done((data) => {
+      const socket = getSocket();
+      if (socket) {
+        const onMessage = (e) => {
+          if (e.jsonData.id === data.id) {
+            profileDeferreds[e.jsonData.peerId].resolve(e.jsonData.profile);
+          }
+
+          socket.off(null, onMessage);
+        };
+
+        socket.on('message', onMessage);
+      }
+    });
+  }
+
+  return promises;
 }
