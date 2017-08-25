@@ -363,6 +363,7 @@ export default class extends BaseVw {
           break;
         case 'FULFILLED':
         case 'AWAITING_PICKUP':
+        case 'PAYMENT_FINALIZED':
           state.currentState = 3;
           break;
         case 'COMPLETED':
@@ -550,7 +551,9 @@ export default class extends BaseVw {
 
     this.$subSections.prepend(this.fulfilled.render().el);
 
-    if (this.model.get('state') === 'FULFILLED' && this.buyer.id === app.profile.id) {
+    if ((this.model.get('state') === 'FULFILLED' ||
+      this.model.get('state') === 'PAYMENT_FINALIZED') &&
+      this.buyer.id === app.profile.id) {
       this.renderCompleteOrderForm();
     }
   }
