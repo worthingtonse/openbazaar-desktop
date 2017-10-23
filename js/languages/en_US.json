@@ -1658,6 +1658,19 @@
     "provideName": "Please provide a title.",
     "nameTooLong": "%{name} exceeds the maximum length of %{maxLength} characters."
   },
+  "shippingRulesModelErrors": {
+    "provideMin": "Please provide a minimum value.",
+    "provideNumericMin": "Please provide a minimum as a number.",
+    "provideMinZeroOrGreater": "Please provide a minimum of at least 0.",
+    "minGreaterThanMax": "The minimum cannot be greater than the maximum.",
+    "provideMax": "Please provide a maximum value.",
+    "provideNumericMax": "Please provide a maximum as a number.",
+    "provideMaxZeroOrGreater": "Please provide a maximum of at least 0.",
+    "providePrice": "Please provide a value.",
+    "provideNumericPrice": "Please provide the value as a number. If including a decimal, a period should be used as the seperator, for example \"0.00\".",
+    "providePriceZeroOrGreater": "Please provide a value of at least 0.",
+    "rangeOverlap": "The minimum and maximum values cannot overlap with another rule."
+  },
   "spendModelErrors": {
     "provideAddress": "Please provide an address.",
     "invalidAddress": "The provided address does not appear to be a valid bitcoin address.",

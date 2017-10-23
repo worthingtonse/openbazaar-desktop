@@ -1,6 +1,7 @@
 import app from '../../app';
 import BaseModel from '../BaseModel';
-import Services from '../../collections/Services.js';
+import Services from '../../collections/Services';
+import ShippingRules from '../../collections/listing/shippingRules/ShippingRules';
 import is from 'is_js';
 
 export default class extends BaseModel {
@@ -20,6 +21,7 @@ export default class extends BaseModel {
   get nested() {
     return {
       services: Services,
+      shippingRules: ShippingRules,
     };
   }
 
