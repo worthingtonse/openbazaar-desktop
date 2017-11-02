@@ -42,62 +42,66 @@
       <hr class="clrBr">
     </div>
     <div class="flexRow gutterHLg">
-      <form class="col3 filterWrapper js-filterWrapper">
-        <div class="flexColWide gutterV">
-          <% _.each(ob.options, function(val, key) { %>
-            <div class="contentBox pad clrP clrBr clrSh2">
-              <h4 class="rowSm"><%= val.label %></h4>
-              <% if (val.type ==='dropdown') { %>
-                <select name="<%= key %>" class="select2Small">
-                <% _.each(val.options, function(option) {
-                  let selected = '';
-                  if (ob.filterVals.hasOwnProperty(key)) {
-                    selected = option.value === ob.filterVals[key] ? 'selected' : '';
-                  } else {
-                    selected = option.default ? 'selected' : '';
-                  }
-                  print(`<option ${selected} value="${option.value}">${option.label}</option>`);
-                }); %>
-                </select>
-              <% } else if (val.type ==='radio') { %>
-                <div class="flexCol">
-                <% _.each(val.options, function(option, ind) { %>
-                  <div class="btnRadio clrBr">
-                     <%
-                      let checked = '';
-                      if (ob.filterVals.hasOwnProperty(key)) {
-                        checked = option.value === ob.filterVals[key] ? 'checked' : '';
-                      } else {
-                        checked = option.default ? 'checked' : '';
-                      }
-                      var parsedLabel = ob.parseEmojis(option.label);
-                      print(`<input type="radio" name="${key}" id="${key + ind}" ${checked} value="${option.value}">`);
-                      print(`<label for="${key + ind}">${parsedLabel}</label>`);
-                     %>
+      <% if (ob.results && !Array.isArray(ob.results)) { %>
+        <form class="col3 filterWrapper js-filterWrapper">
+          <div class="flexColWide gutterV">
+            <% _.each(ob.options, function(val, key) { %>
+              <div class="contentBox pad clrP clrBr clrSh2">
+                <h4 class="rowSm"><%= val.label %></h4>
+                <% if (val.type ==='dropdown') { %>
+                  <select name="<%= key %>" class="select2Small">
+                  <% _.each(val.options, function(option) {
+                    let selected = '';
+                    if (ob.filterVals.hasOwnProperty(key)) {
+                      selected = option.value === ob.filterVals[key] ? 'selected' : '';
+                    } else {
+                      selected = option.default ? 'selected' : '';
+                    }
+                    print(`<option ${selected} value="${option.value}">${option.label}</option>`);
+                  }); %>
+                  </select>
+                <% } else if (val.type ==='radio') { %>
+                  <div class="flexCol">
+                  <% _.each(val.options, function(option, ind) { %>
+                    <div class="btnRadio clrBr">
+                       <%
+                        let checked = '';
+                        if (ob.filterVals.hasOwnProperty(key)) {
+                          checked = option.value === ob.filterVals[key] ? 'checked' : '';
+                        } else {
+                          checked = option.default ? 'checked' : '';
+                        }
+                        var parsedLabel = ob.parseEmojis(option.label);
+                        print(`<input type="radio" name="${key}" id="${key + ind}" ${checked} value="${option.value}">`);
+                        print(`<label for="${key + ind}">${parsedLabel}</label>`);
+                       %>
+                    </div>
+                  <% }); %>
                   </div>
-                <% }); %>
-                </div>
-              <% } else if (val.type ==='checkbox') { %>
-                <div class="flexCol">
-                <% _.each(val.options, function(option, index) {
-                  let checked = '';
-                  checked = option.checked ? 'checked' : '';
-                  var parsedLabel = ob.parseEmojis(option.label);
-                  print(`<input type="checkbox" ${checked} id="${option.name}" name="${option.name}">`);
-                  print(`<label for="${option.name}">${parsedLabel}</label>`);
-                }); %>
-                </div>
-              <% } %>
-            </div>
-          <% }); %>
-        </div>
-      </form>
-      <div class="col9">
+                <% } else if (val.type ==='checkbox') { %>
+                  <div class="flexCol">
+                  <% _.each(val.options, function(option, index) {
+                    let checked = '';
+                    checked = option.checked ? 'checked' : '';
+                    var parsedLabel = ob.parseEmojis(option.label);
+                    print(`<input type="checkbox" ${checked} id="${option.name}" name="${option.name}">`);
+                    print(`<label for="${option.name}">${parsedLabel}</label>`);
+                  }); %>
+                  </div>
+                <% } %>
+              </div>
+            <% }); %>
+          </div>
+        </form>
+        <div class="col9">
+      <% } else { %>
+        <div class="col12">
+      <% } %>
         <div class="flexCol">
           <div class="width100">
             <div class="row flexVBase gutterH">
               <div class="tx5 flexExpand">
-                <% if (ob.results) { %>
+                <% if (ob.results && !Array.isArray(ob.results)) { %>
                   <% if (ob.term) { %>
                     <%= ob.polyT('search.resultsFound', {
                       totalResults: ob.results.total,

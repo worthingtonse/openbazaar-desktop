@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import Results from '../../js/collections/Results';
+import Results from '../../js/collections/search/Results';
 import ListingShort from '../../js/models/listing/ListingShort';
 import Profile from '../../js/models/profile/Profile';
 

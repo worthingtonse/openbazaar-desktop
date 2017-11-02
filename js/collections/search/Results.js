@@ -1,7 +1,7 @@
-import { integerToDecimal } from '../utils/currency';
+import { integerToDecimal } from '../../utils/currency';
 import { Collection } from 'backbone';
-import ListingShort from '../models/listing/ListingShort';
-import Profile from '../models/profile/Profile';
+import ListingShort from '../../models/listing/ListingShort';
+import Profile from '../../models/profile/Profile';
 
 export default class extends Collection {
   constructor(models = [], options = {}) {
@@ -20,10 +20,10 @@ export default class extends Collection {
 
   parse(response) {
     const parsedResponse = [];
-    const resultsParent = response.results || {};
-    const results = resultsParent.results || [];
-    this.morePages = !!resultsParent.morePages;
-    this.total = resultsParent.total || 0;
+    const outerResults = response.results;
+    const results = Array.isArray(outerResults) ? outerResults : outerResults.results;
+    this.morePages = !!response.morePages;
+    this.total = response.total || 0;
 
     results.forEach(result => {
       const updatedResult = result.data;

@@ -6,7 +6,7 @@ import ListingCard from '../ListingCard';
 import UserCard from '../UserCard';
 import PageControls from '../components/PageControls';
 import ListingCardModel from '../../models/listing/ListingShort';
-import ResultsCol from '../../collections/Results';
+import ResultsCol from '../../collections/search/Results';
 
 
 export default class extends baseVw {
@@ -22,6 +22,10 @@ export default class extends baseVw {
     this.serverPage = this.options.serverPage || 0;
     this.pageSize = this.options.pageSize || 24;
     this.reportsUrl = this.options.reportsUrl || '';
+    this.total = this.options.total || 0;
+    this.multiple = this.options.multiple;
+    this.title = this.options.title;
+    this.searchTerm = this.options.searchTerm;
 
     this.cardViews = [];
     this.pageCollections = {};
@@ -32,6 +36,20 @@ export default class extends baseVw {
 
   className() {
     return 'searchResults flexColRow gutterV';
+  }
+
+  events() {
+    return {
+      'click .js-seeAll': 'clickSeeAll',
+    };
+  }
+
+  seeAll() {
+    this.trigger('seeAll', { term: this.searchTerm });
+  }
+
+  clickSeeAll() {
+    this.seeAll();
   }
 
   createCardView(model) {
@@ -148,7 +166,11 @@ export default class extends baseVw {
 
   render() {
     loadTemplate('search/results.html', (t) => {
-      this.$el.html(t());
+      this.$el.html(t({
+        total: this.total,
+        multiple: this.multiple,
+        title: this.title,
+      }));
 
       this.$resultsGrid = this.$('.js-resultsGrid');
       this.$displayText = this.$('.js-displayingText');

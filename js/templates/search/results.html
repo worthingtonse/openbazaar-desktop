@@ -1,4 +1,18 @@
+<% if (ob.multiple) { %>
+<div class="flex gutterH">
+  <h3 class="flexExpand"><%= ob.title %></h3>
+  <div class="tx5">
+    <b><%= ob.polyT('search.resultsTotal', { totalResults: ob.total }) %></b>
+  </div>
+</div>
+<% } %>
 <div class="listingsGrid flex js-resultsGrid"></div>
+<% if (ob.multiple) { %>
+<div class="flexHRight">
+  <button class="btn clrBr clrP js-seeAll">See All</button>
+</div>
+<% } else { %>
 <div class="js-pageControlsContainer"></div>
+<% } %>
 <hr class="clrBr">
 <div class="flexCent loadingSearch clrS"><%= ob.spinner({ className: 'spinnerLg' }) %></div>
