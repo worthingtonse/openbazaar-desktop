@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import '../../../lib/select2';
 import app from '../../../app';
 import openSimpleMessage from '../SimpleMessage';
 import { getCurrentConnection } from '../../../utils/serverConnect';
@@ -191,6 +192,10 @@ export default class extends baseVw {
       this._$formFields = null;
       this._$usernameLabel = null;
       this._$passwordLabel = null;
+
+      this.$('select').select2({
+        minimumResultsForSearch: Infinity,
+      });
 
       if (!this.rendered) {
         this.rendered = true;

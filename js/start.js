@@ -33,6 +33,7 @@ import Followers from './collections/Followers';
 import { fetchExchangeRates } from './utils/currency';
 import './utils/exchangeRateSyncer';
 import './utils/listingData';
+import SelectCoin from './views/modals/startup/SelectCoin.js';
 import { launchDebugLogModal } from './utils/modalManager';
 import listingDeleteHandler from './startup/listingDelete';
 import { fixLinuxZoomIssue, handleLinks } from './startup';
@@ -366,6 +367,9 @@ function onboardIfNeeded() {
  // let's start our flow - do we need onboarding?,
  // fetching app-wide models...
 function start() {
+  // const selectCoin = new SelectCoin().render().open();
+  // return;
+
   fetchConfig().done((data) => {
     app.profile = new Profile({ peerID: data.peerID });
     app.router.onProfileSet();
