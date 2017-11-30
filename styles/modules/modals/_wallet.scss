@@ -123,6 +123,20 @@
         right: -28px;
         transform: translateY(-7px);
       }
+
+      .disabledSendMessage {
+        display: none;
+      }      
+
+      .disabledSend {
+        .btnSend {
+          @include disabled();
+        }
+
+        .disabledSendMessage {
+          display: block;
+        }
+      }
     }
   }
 

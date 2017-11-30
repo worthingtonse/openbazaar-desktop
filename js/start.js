@@ -301,13 +301,14 @@ function fetchStartupData() {
       fetchStartupDataDeferred.resolve();
     })
     .fail((jqXhr) => {
-      if (ownFollowingFailed || walletBalanceFetchFailed || searchProvidersFetchFailed) {
+      // if (ownFollowingFailed || walletBalanceFetchFailed || searchProvidersFetchFailed) {
+      if (ownFollowingFailed || searchProvidersFetchFailed) {
         let title = '';
 
         if (ownFollowingFailed) {
           title = app.polyglot.t('startUp.dialogs.unableToGetFollowData.title');
-        } else if (walletBalanceFetchFailed) {
-          title = app.polyglot.t('startUp.dialogs.unableToGetWalletBalance.title');
+        // } else if (walletBalanceFetchFailed) {
+        //   title = app.polyglot.t('startUp.dialogs.unableToGetWalletBalance.title');
         } else {
           title = app.polyglot.t('startUp.dialogs.unableToGetSearchProviders.title');
         }
@@ -339,9 +340,9 @@ function fetchStartupData() {
         .render()
         .open();
       } else {
-        // We don't care if the exchange rate fetch failed, because
-        // the exchangeRateSyncer will display a status message about it
-        // and the app will gracefully handle not having exchange rates.
+        // We don't care if the exchange rate or wallet balance fetches fail, because
+        // the app is designed to gracefully handle that and systems are in place to get
+        // the data later.
         fetchStartupDataDeferred.resolve();
       }
     });
@@ -480,6 +481,7 @@ function start() {
     });
 
     app.walletBalance = new WalletBalance();
+
     app.searchProviders = new SearchProvidersCol();
 
     onboardIfNeeded().done(() => {
@@ -532,8 +534,11 @@ function start() {
           const serverSocket = getSocket();
 
           if (serverSocket) {
+            let moo = 0;
             serverSocket.on('message', (e = {}) => {
               if (e.jsonData.walletUpdate) {
+                moo += 1;
+                if (moo < 2) return;
                 const parsedData = app.walletBalance.parse({
                   confirmed: e.jsonData.walletUpdate.confirmed,
                   unconfirmed: e.jsonData.walletUpdate.unconfirmed,

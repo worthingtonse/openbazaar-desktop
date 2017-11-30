@@ -16,6 +16,12 @@ export default class extends baseVw {
     this._saveInProgress = false;
     this._sendConfirmOn = false;
     this.model = new Spend();
+
+    if (!app.walletBalance.isBalanceAvailable) {
+      this.listenTo(app.walletBalance, 'change:confirmed', () => {
+        this.getCachedEl('.js-sendForm').removeClass('disabledSend');
+      });
+    }
   }
 
   className() {
@@ -153,6 +159,7 @@ export default class extends baseVw {
         currencies: this.currencies ||
           getCurrenciesSortedByCode(),
         saveInProgress: this.saveInProgress,
+        walletBalanceAvailable: app.walletBalance.isBalanceAvailable,
       }));
 
       this._$addressInput = null;

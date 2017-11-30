@@ -109,9 +109,6 @@
       "unableToGetFollowData": {
         "title": "Unable to get data about who you're following."
       },
-      "unableToGetWalletBalance": {
-        "title": "Unable to get wallet balance."
-      },
       "unableToGetSearchProviders": {
         "title": "Unable to load search providers."
       }
@@ -776,7 +773,8 @@
       "notePlaceholder": "Only seen by you",
       "sendBtn": "Send",
       "clear": "Clear",
-      "sendPaymentFailDialogTitle": "Unable to send payment"
+      "sendPaymentFailDialogTitle": "Unable to send payment",
+      "sendDisabled": "Sending money is currently disabled until we are able to obtain your wallet balance."
     },
     "spendConfirmBox": {
       "heading": "Are you sure?",

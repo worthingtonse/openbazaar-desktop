@@ -51,10 +51,12 @@ export default class extends baseVw {
 
   render() {
     const state = this.getState();
+    const balanceAvailable = app.walletBalance.isBalanceAvailable;
 
     loadTemplate('modals/wallet/stats.html', (t) => {
       this.$el.html(t({
         ...state,
+        balanceAvailable,
         formatUnitlessCryptoAmount: this.formatUnitlessCryptoAmount,
       }));
     });

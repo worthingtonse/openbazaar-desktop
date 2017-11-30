@@ -11,25 +11,29 @@
     }
   };
 
+  // If the balance info is not yet available, we'll use a dummy number so subsequent function calls
+  // don't bomb and then we'll ignore it.
+  const balance = ob.balanceAvailable ? ob.balance : 10;
   const serverCur = ob.currencyMod.getServerCurrency().code;
-  const formattedCrypto = ob.formatUnitlessCryptoAmount(ob.balance);
+  const formattedCrypto = ob.formatUnitlessCryptoAmount(balance);
   const cryptoTextSize = getTextSize(formattedCrypto);
-  const formattedFiat = ob.currencyMod.convertAndFormatCurrency(ob.balance, serverCur, ob.userCurrency);
+  const formattedFiat = ob.currencyMod.convertAndFormatCurrency(balance, serverCur, ob.userCurrency);
   const userCurrencyValidity = ob.currencyMod.getCurrencyValidity(ob.userCurrency);
-
   const fiatTextSize = getTextSize(formattedFiat);
 %>
 <div class="rowLg flexColRows gutterV">
-  <div>
-    <div class="clrTEmph1 <%= cryptoTextSize %> txB"><%= formattedCrypto %></div>
-    <div><%= ob.polyT(`cryptoCurrencies.${serverCur}`) %></div>
-  </div>
-  <% if (userCurrencyValidity === 'VALID' && ob.userCurrency !== serverCur) { %>
-  <div>
-    <div class="clrTEmph1 <%= fiatTextSize %> txB"><%= formattedFiat %></div>
-    <div><%= ob.polyT('wallet.valueInCurrencyLabel',
-      { currency: userCurrencyValidity === 'VALID' ? ob.userCurrency : serverCur }) %></div>
-  </div>
+  <% if (ob.balanceAvailable) { %>
+    <div>
+      <div class="clrTEmph1 <%= cryptoTextSize %> txB"><%= formattedCrypto %></div>
+      <div><%= ob.polyT(`cryptoCurrencies.${serverCur}`) %></div>
+    </div>
+    <% if (userCurrencyValidity === 'VALID' && ob.userCurrency !== serverCur) { %>
+    <div>
+      <div class="clrTEmph1 <%= fiatTextSize %> txB"><%= formattedFiat %></div>
+      <div><%= ob.polyT('wallet.valueInCurrencyLabel',
+        { currency: userCurrencyValidity === 'VALID' ? ob.userCurrency : serverCur }) %></div>
+    </div>
+    <% } %>
   <% } %>
   <div>
     <% if (typeof ob.transactionCount !== 'undefined') { %>

@@ -29,13 +29,18 @@ class Spend extends BaseModel {
     const amount = this.get('amount');
 
     if (typeof amount === 'number') {
-      console.log(`${amount} - ${this.get('currency')} - ${getServerCurrency().code}`);
       cryptoAmount = convertCurrency(amount, this.get('currency'), getServerCurrency().code);
     }
 
-    console.log(`the result is ${cryptoAmount}`);
-
     return cryptoAmount;
+  }
+
+  save(...args) {
+    if (!app.walletBalance.isBalanceAvailable) {
+      throw new Error('Unable to save because wallet balance information is not available.');
+    }
+
+    super.save(...args);
   }
 
   validate(attrs) {

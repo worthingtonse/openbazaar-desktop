@@ -1,5 +1,5 @@
 <h2 class="h3 txCtr txUnl"><%= ob.polyT('wallet.btnSendMoney') %></h2>
-<form class="padMdKids padStack">
+<form class="js-sendForm padMdKids padStack <%= ob.walletBalanceAvailable ? '' : 'disabledSend' %>">
   <div class="flexRow gutterHLg">
     <div class="col2">
       <div class="flexVCent flexHRight">
@@ -47,11 +47,12 @@
       <div class="flexHRight flexVCent gutterH col11">
         <a class="js-sendMoneyClear flexNoShrink"><%= ob.polyT('wallet.sendMoney.clear') %></a>
         <%= ob.processingButton({
-          className: `js-btnSend btn clrBAttGrad clrBrDec1 clrTOnEmph ${ob.saveInProgress ? 'processing' : ''}`,
+          className: `js-btnSend btn btnSend clrBAttGrad clrBrDec1 clrTOnEmph ${ob.saveInProgress ? 'processing' : ''}`,
           btnText: ob.polyT('wallet.sendMoney.sendBtn')
         }) %>
       </div>
     </div>
   </div>
+  <p class="clrTErr disabledSendMessage"><i class="ion-alert-circled"></i> <%= ob.polyT('wallet.sendMoney.sendDisabled') %></p>
 </form>
 <div class="js-sendConfirmContainer"></div>
