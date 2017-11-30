@@ -62,6 +62,12 @@ export default class extends BaseVw {
         }
       });
     }
+
+    if (!app.walletBalance.isBalanceAvailable) {
+      this.listenTo(app.walletBalance, 'balanceAvailable', () => {
+        this.getCachedEl('.js-payForOrderInnerWrap').removeClass('disabledPayFromWallet');
+      });
+    }
   }
 
   set balanceRemaining(amount) {
@@ -78,7 +84,7 @@ export default class extends BaseVw {
   }
 
   className() {
-    return 'pending';
+    return 'payForOrder';
   }
 
   events() {
@@ -212,6 +218,7 @@ export default class extends BaseVw {
           qrDataUri: this.qrDataUri,
           walletIconTmpl,
           isModerated: this.isModerated,
+          walletBalanceAvailable: app.walletBalance.isBalanceAvailable,
         }));
       });
 

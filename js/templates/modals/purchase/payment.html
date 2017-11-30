@@ -5,7 +5,7 @@
 <%
   const serverCur = ob.currencyMod.getServerCurrency();
 %>
-<div class="flexRow gutterHLg pad rowMd">
+<div class="flexRow gutterHLg pad rowMd js-payForOrderInnerWrap <% if (!ob.walletBalanceAvailable) print('disabledPayFromWallet') %>">
   <div class="flexNoShrink">
     <a class="QR js-purchaseQRCode"><img class="js-qrCodeImg" src="<%= ob.qrDataUri %>"></a>
   </div>
@@ -30,7 +30,7 @@
         <div class="flexRow gutterH rowLg">
           <div class="col6">
             <%= ob.processingButton({
-              className: 'btn btnThin width100 clrP clrBr clrSh2 js-payFromWallet',
+              className: 'btn btnThin width100 clrP clrBr clrSh2 js-payFromWallet btnPayFromWallet',
               textClassName: 'flexCent',
               btnText: `<i class="icon">${ob.walletIconTmpl()}</i>${ob.polyT('purchase.pendingSection.payFromWallet')}`,
             }) %>
@@ -45,6 +45,7 @@
           </div>
           <% } %>
         </div>
+        <p class="clrTErr tx5 disabledPayFromWalletMessage"><i class="ion-alert-circled"></i> <%= ob.polyT('purchase.pendingSection.disabledPayFromWallet') %></p>
         <div class="txBase clrT2">
           <% if (serverCur.code === 'BTC') { %>
           <p>

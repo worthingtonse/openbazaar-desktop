@@ -18,7 +18,7 @@ export default class extends baseVw {
     this.model = new Spend();
 
     if (!app.walletBalance.isBalanceAvailable) {
-      this.listenTo(app.walletBalance, 'change:confirmed', () => {
+      this.listenTo(app.walletBalance, 'balanceAvailable', () => {
         this.getCachedEl('.js-sendForm').removeClass('disabledSend');
       });
     }

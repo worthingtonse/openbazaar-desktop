@@ -774,7 +774,7 @@
       "sendBtn": "Send",
       "clear": "Clear",
       "sendPaymentFailDialogTitle": "Unable to send payment",
-      "sendDisabled": "Sending money is currently disabled until we are able to obtain your wallet balance."
+      "sendDisabled": "Sending money is currently disabled until your wallet balance is obtained."
     },
     "spendConfirmBox": {
       "heading": "Are you sure?",
@@ -1219,7 +1219,8 @@
       "altcoinLink": "You can still fund your OB wallet with altcoins.",
       "walletNote": "<b>External wallets</b> that don't support Segregated Witness may not be able to pay for transactions.",
       "walletLink": "You can send funds to your OB wallet instead.",
-      "feeNote": "<b>Remember to cover any fees</b> when you send funds to your OpenBazaar wallet."
+      "feeNote": "<b>Remember to cover any fees</b> when you send funds to your OpenBazaar wallet.",
+      "disabledPayFromWallet": "Paying from your wallet is currently disabled until your wallet balance is obtained."
     },
     "completeSection": {
       "paymentSent": "Payment Sent!",

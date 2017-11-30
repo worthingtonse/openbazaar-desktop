@@ -43,25 +43,6 @@
     }
   }
 
-  .pending {
-    .QR {
-      display: block;
-
-      img {
-        width: 240px;
-        height: 240px;
-      }
-    }
-
-    .confirmBox {
-      top: calc(100% + #{$pad});
-    }
-
-    .copyNotification {
-      top: -0.6em
-    }
-  }
-
   .complete {
     .message {
       border-style: solid;
@@ -113,5 +94,38 @@
     top: 0;
     width: 100%;
     height: 100%;
+  }
+}
+
+.payForOrder {
+  .QR {
+    display: block;
+
+    img {
+      width: 240px;
+      height: 240px;
+    }
+  }
+
+  .confirmBox {
+    top: calc(100% + #{$pad});
+  }
+
+  .copyNotification {
+    top: -0.6em
+  }
+
+  .disabledPayFromWalletMessage {
+    display: none;
+  }
+
+  .disabledPayFromWallet {
+    .btnPayFromWallet {
+      @include disabled();
+    }
+
+    .disabledPayFromWalletMessage {
+      display: block;
+    }
   }
 }
