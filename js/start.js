@@ -538,7 +538,7 @@ function start() {
             serverSocket.on('message', (e = {}) => {
               if (e.jsonData.walletUpdate) {
                 moo += 1;
-                if (moo < 2) return;
+                // if (moo < 2) return;
                 const parsedData = app.walletBalance.parse({
                   confirmed: e.jsonData.walletUpdate.confirmed,
                   unconfirmed: e.jsonData.walletUpdate.unconfirmed,
